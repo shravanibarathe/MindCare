@@ -64,13 +64,13 @@ export function EmotionChart() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
         <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-1/3"></div>
           <div className="space-y-2">
-            <div className="h-12 bg-gray-200 rounded"></div>
-            <div className="h-12 bg-gray-200 rounded"></div>
-            <div className="h-12 bg-gray-200 rounded"></div>
+            <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+            <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+            <div className="h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
           </div>
         </div>
       </div>
@@ -79,12 +79,12 @@ export function EmotionChart() {
 
   if (!stats || stats.total_logs === 0) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center mb-4">
-          <TrendingUp className="w-6 h-6 text-blue-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900">Emotion Insights</h2>
+          <TrendingUp className="w-6 h-6 text-blue-500 dark:text-blue-400 mr-2" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Emotion Insights</h2>
         </div>
-        <p className="text-gray-500 text-center py-8">
+        <p className="text-gray-500 dark:text-gray-300 text-center py-8">
           Start chatting to see your emotional journey
         </p>
       </div>
@@ -103,11 +103,13 @@ export function EmotionChart() {
   const dominantEmotion = emotionPercentages[0]?.emotion;
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <TrendingUp className="w-6 h-6 text-blue-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900">Emotion Insights</h2>
+          <TrendingUp className="w-6 h-6 text-blue-500 dark:text-blue-400 mr-2" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            Emotion Insights
+          </h2>
         </div>
 
         <div className="flex gap-2">
@@ -115,8 +117,8 @@ export function EmotionChart() {
             onClick={() => setTimeRange(7)}
             className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
               timeRange === 7
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-blue-500 dark:bg-blue-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             7 Days
@@ -125,8 +127,8 @@ export function EmotionChart() {
             onClick={() => setTimeRange(30)}
             className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
               timeRange === 30
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-blue-500 dark:bg-blue-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             30 Days
@@ -134,8 +136,8 @@ export function EmotionChart() {
         </div>
       </div>
 
-      <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl">
-        <p className="text-sm text-gray-600 mb-1">Most Frequent Emotion</p>
+      <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-xl">
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Most Frequent Emotion</p>
         <div className="flex items-center">
           <div
             className="p-2 rounded-lg mr-3"
@@ -146,16 +148,20 @@ export function EmotionChart() {
             </div>
           </div>
           <div>
-            <p className="text-2xl font-bold capitalize" style={{ color: emotionColors[dominantEmotion] }}>
+            <p
+              className="text-2xl font-bold capitalize"
+              style={{ color: emotionColors[dominantEmotion] }}
+            >
               {dominantEmotion}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               {emotionPercentages[0].percentage.toFixed(0)}% of the time
             </p>
           </div>
         </div>
       </div>
 
+      {/* Percentage List */}
       <div className="space-y-3">
         {emotionPercentages.map(({ emotion, count, percentage }) => (
           <div key={emotion}>
@@ -169,15 +175,19 @@ export function EmotionChart() {
                     {emotionIcons[emotion]}
                   </div>
                 </div>
-                <span className="text-sm font-medium text-gray-700 capitalize">{emotion}</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+                  {emotion}
+                </span>
               </div>
-              <span className="text-sm text-gray-600">
+
+              <span className="text-sm text-gray-600 dark:text-gray-300">
                 {count} ({percentage.toFixed(0)}%)
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
               <div
-                className="h-full rounded-full transition-all duration-500"
+                className="h-full rounded-full transition-all"
                 style={{
                   width: `${percentage}%`,
                   backgroundColor: emotionColors[emotion],
@@ -188,10 +198,10 @@ export function EmotionChart() {
         ))}
       </div>
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold text-gray-900">{stats.total_logs}</span> emotional
-          check-ins in the last {timeRange} days
+      <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          <span className="font-semibold text-gray-900 dark:text-white">{stats.total_logs}</span>{' '}
+          emotional check-ins in the last {timeRange} days
         </p>
       </div>
     </div>

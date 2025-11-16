@@ -16,9 +16,7 @@ export function JournalView() {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
-      loadEntries();
-    }
+    if (user) loadEntries();
   }, [user]);
 
   useEffect(() => {
@@ -56,9 +54,7 @@ export function JournalView() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/journal-summary`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           user_id: user.id,
           date: selectedDate,
@@ -66,7 +62,7 @@ export function JournalView() {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        await response.json();
         await loadEntries();
       }
     } catch (error) {
@@ -83,7 +79,7 @@ export function JournalView() {
     try {
       const { error } = await supabase
         .from('journal_entries')
-        .update({ reflection_notes: reflectionNotes })
+        .update({ reflectionNotes })
         .eq('id', currentEntry.id);
 
       if (error) throw error;
@@ -105,40 +101,56 @@ export function JournalView() {
   };
 
   return (
-    <div className="h-full flex flex-col lg:flex-row gap-6 p-6">
+    <div className="h-full flex flex-col lg:flex-row gap-6 p-6 bg-gray-50 dark:bg-gray-900">
+
+      {/* LEFT SIDEBAR */}
       <div className="lg:w-1/3">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+
           <div className="flex items-center mb-4">
-            <Calendar className="w-6 h-6 text-blue-500 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Journal Entries</h2>
+            <Calendar className="w-6 h-6 text-blue-500 dark:text-blue-400 mr-2" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Journal Entries
+            </h2>
           </div>
 
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
+            className="
+              w-full px-4 py-2 rounded-lg 
+              border border-gray-300 dark:border-gray-600
+              bg-white dark:bg-gray-700
+              text-gray-900 dark:text-gray-200
+              focus:ring-2 focus:ring-blue-500
+              mb-4
+            "
           />
 
-          <div className="space-y-2 max-h-[500px] overflow-y-auto">
+          <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
             {entries.map((entry) => (
               <button
                 key={entry.id}
                 onClick={() => setSelectedDate(entry.entry_date)}
-                className={`w-full text-left p-3 rounded-lg transition-all ${
-                  entry.entry_date === selectedDate
-                    ? 'bg-blue-50 border-2 border-blue-500'
-                    : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
-                }`}
+                className={`
+                  w-full text-left p-3 rounded-lg border-2 transition-all
+                  ${
+                    entry.entry_date === selectedDate
+                      ? "bg-blue-100 dark:bg-blue-900/30 border-blue-500 dark:border-blue-400"
+                      : "bg-gray-100 dark:bg-gray-700 border-transparent hover:bg-gray-200 dark:hover:bg-gray-600"
+                  }
+                `}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 dark:text-white">
                     {new Date(entry.entry_date).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',
                     })}
                   </span>
+
                   {entry.dominant_emotion && (
                     <span
                       className="px-2 py-1 rounded-full text-xs font-medium text-white capitalize"
@@ -148,8 +160,11 @@ export function JournalView() {
                     </span>
                   )}
                 </div>
+
                 {entry.mood_summary && (
-                  <p className="text-sm text-gray-600 line-clamp-2">{entry.mood_summary}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                    {entry.mood_summary}
+                  </p>
                 )}
               </button>
             ))}
@@ -157,12 +172,14 @@ export function JournalView() {
         </div>
       </div>
 
+      {/* RIGHT CONTENT AREA */}
       <div className="lg:w-2/3 flex-1">
-        <div className="bg-white rounded-2xl shadow-lg p-6 h-full flex flex-col">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 h-full flex flex-col border border-gray-200 dark:border-gray-700">
+
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <BookOpen className="w-6 h-6 text-blue-500 mr-2" />
-              <h2 className="text-xl font-semibold text-gray-900">
+              <BookOpen className="w-6 h-6 text-blue-500 dark:text-blue-400 mr-2" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {new Date(selectedDate).toLocaleDateString('en-US', {
                   weekday: 'long',
                   month: 'long',
@@ -175,51 +192,85 @@ export function JournalView() {
             <button
               onClick={generateSummary}
               disabled={generating}
-              className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50"
+              className="
+                flex items-center px-4 py-2 rounded-lg text-white
+                bg-gradient-to-r from-blue-500 to-teal-500
+                hover:shadow-lg transform hover:scale-105
+                transition-all disabled:opacity-50
+              "
             >
               <Sparkles className="w-4 h-4 mr-2" />
               {generating ? 'Generating...' : 'Generate Summary'}
             </button>
           </div>
 
+          {/* If entry exists */}
           {currentEntry ? (
             <div className="flex-1 flex flex-col">
-              <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl">
-                <h3 className="font-semibold text-gray-900 mb-2">AI Summary</h3>
-                <p className="text-gray-700 leading-relaxed">
+
+              {/* AI Summary */}
+              <div className="mb-6 p-4 rounded-xl bg-gray-100 dark:bg-gray-700">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  AI Summary
+                </h3>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                   {currentEntry.mood_summary || 'No summary available for this day.'}
                 </p>
               </div>
 
+              {/* Reflections */}
               <div className="flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900">Personal Reflections</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    Personal Reflections
+                  </h3>
+
                   <button
                     onClick={saveReflection}
                     disabled={loading}
-                    className="flex items-center px-3 py-1 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-all disabled:opacity-50"
+                    className="
+                      flex items-center px-3 py-1 bg-blue-500 text-white rounded-lg 
+                      text-sm hover:bg-blue-600 transition-all disabled:opacity-50
+                    "
                   >
                     <Save className="w-4 h-4 mr-1" />
                     Save
                   </button>
                 </div>
+
                 <textarea
                   value={reflectionNotes}
                   onChange={(e) => setReflectionNotes(e.target.value)}
-                  placeholder="Write your thoughts and reflections for today..."
-                  className="flex-1 p-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="Write your thoughts and reflections..."
+                  className="
+                    flex-1 p-4 rounded-lg border 
+                    border-gray-300 dark:border-gray-600
+                    bg-white dark:bg-gray-700
+                    text-gray-900 dark:text-gray-200
+                    focus:ring-2 focus:ring-blue-500 
+                    resize-none
+                  "
                 />
               </div>
             </div>
           ) : (
+
+            /* No entry state */
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 mb-4">No journal entry for this date</p>
+                <Calendar className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400 mb-4">
+                  No journal entry for this date
+                </p>
+
                 <button
                   onClick={generateSummary}
                   disabled={generating}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50"
+                  className="
+                    px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 
+                    text-white rounded-lg hover:shadow-lg 
+                    transform hover:scale-105 transition-all disabled:opacity-50
+                  "
                 >
                   <Sparkles className="w-4 h-4 inline mr-2" />
                   {generating ? 'Generating...' : 'Create Entry'}
@@ -227,6 +278,7 @@ export function JournalView() {
               </div>
             </div>
           )}
+
         </div>
       </div>
     </div>

@@ -3,12 +3,14 @@ import { Settings, User, Shield, Trash2, Save } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import type { UserPreferences } from '../../lib/supabase';
+import { useTheme } from "../../contexts/ThemeContext";
 
 export function SettingsPanel() {
   const { user, signOut } = useAuth();
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const { applyTheme } = useTheme();
 
   useEffect(() => {
     if (user) {
@@ -86,7 +88,7 @@ export function SettingsPanel() {
   if (!preferences) {
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading settings...</div>
+        <div className="animate-pulse text-gray-400 dark:text-gray-500">Loading settings...</div>
       </div>
     );
   }
@@ -94,63 +96,52 @@ export function SettingsPanel() {
   return (
     <div className="h-full overflow-y-auto p-6">
       <div className="max-w-2xl mx-auto">
+        
         <div className="flex items-center mb-8">
-          <Settings className="w-8 h-8 text-blue-500 mr-3" />
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+          <Settings className="w-8 h-8 text-blue-500 dark:text-blue-400 mr-3" />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+
+          {/* ACCOUNT CARD */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center mb-4">
-              <User className="w-5 h-5 text-gray-700 mr-2" />
-              <h2 className="text-xl font-semibold text-gray-900">Account</h2>
+              <User className="w-5 h-5 text-gray-700 dark:text-gray-300 mr-2" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Account</h2>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                 <input
                   type="email"
                   value={user?.email || ''}
                   disabled
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-600"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-200"
                 />
               </div>
 
               <button
                 onClick={signOut}
-                className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all font-medium"
+                className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all font-medium"
               >
                 Sign Out
               </button>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Preferences</h2>
+          {/* PREFERENCES CARD */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Preferences</h2>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Theme Preference
-                </label>
-                <select
-                  value={preferences.theme_preference}
-                  onChange={(e) =>
-                    setPreferences({ ...preferences, theme_preference: e.target.value })
-                  }
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="auto">Auto (Based on Emotion)</option>
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                </select>
-              </div>
-
+             
+              {/* VOICE TOGGLE */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-900">Voice Responses</p>
-                  <p className="text-sm text-gray-600">Enable AI voice responses</p>
+                  <p className="font-medium text-gray-900 dark:text-white">Voice Responses</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Enable AI voice responses</p>
                 </div>
                 <button
                   onClick={() =>
@@ -160,21 +151,24 @@ export function SettingsPanel() {
                     })
                   }
                   className={`relative w-12 h-6 rounded-full transition-all ${
-                    preferences.voice_response_enabled ? 'bg-blue-500' : 'bg-gray-300'
+                    preferences.voice_response_enabled
+                      ? 'bg-blue-500 dark:bg-blue-400'
+                      : 'bg-gray-300 dark:bg-gray-600'
                   }`}
                 >
                   <div
-                    className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all ${
+                    className={`absolute top-1 left-1 w-4 h-4 bg-white dark:bg-gray-200 rounded-full transition-all ${
                       preferences.voice_response_enabled ? 'translate-x-6' : 'translate-x-0'
                     }`}
                   />
                 </button>
               </div>
 
+              {/* MUSIC TOGGLE */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-900">Relaxation Music</p>
-                  <p className="text-sm text-gray-600">Enable music recommendations</p>
+                  <p className="font-medium text-gray-900 dark:text-white">Relaxation Music</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Enable music recommendations</p>
                 </div>
                 <button
                   onClick={() =>
@@ -184,19 +178,22 @@ export function SettingsPanel() {
                     })
                   }
                   className={`relative w-12 h-6 rounded-full transition-all ${
-                    preferences.relaxation_music_enabled ? 'bg-blue-500' : 'bg-gray-300'
+                    preferences.relaxation_music_enabled
+                      ? 'bg-blue-500 dark:bg-blue-400'
+                      : 'bg-gray-300 dark:bg-gray-600'
                   }`}
                 >
                   <div
-                    className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all ${
+                    className={`absolute top-1 left-1 w-4 h-4 bg-white dark:bg-gray-200 rounded-full transition-all ${
                       preferences.relaxation_music_enabled ? 'translate-x-6' : 'translate-x-0'
                     }`}
                   />
                 </button>
               </div>
 
+              {/* RETENTION INPUT */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Data Retention (Days)
                 </label>
                 <input
@@ -210,20 +207,21 @@ export function SettingsPanel() {
                   }
                   min="30"
                   max="3650"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
                 />
-                <p className="text-sm text-gray-500 mt-1">
-                  How long to keep your emotional data (30-3650 days)
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  How long to keep your emotional data (30–3650 days)
                 </p>
               </div>
 
+              {/* SAVE BUTTON */}
               <button
                 onClick={savePreferences}
                 disabled={loading}
                 className={`w-full flex items-center justify-center px-4 py-3 rounded-lg font-medium transition-all ${
                   saved
                     ? 'bg-green-500 text-white'
-                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700'
                 } disabled:opacity-50`}
               >
                 <Save className="w-5 h-5 mr-2" />
@@ -232,25 +230,28 @@ export function SettingsPanel() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-red-100">
+          {/* DELETE CARD */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-red-200 dark:border-red-700">
             <div className="flex items-center mb-4">
-              <Shield className="w-5 h-5 text-red-600 mr-2" />
-              <h2 className="text-xl font-semibold text-gray-900">Privacy & Data</h2>
+              <Shield className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Privacy & Data
+              </h2>
             </div>
 
-            <p className="text-sm text-gray-600 mb-4">
-              Your emotional wellness data is private and secure. You have complete control over
-              your information.
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+              Your emotional wellness data is private and secure.
             </p>
 
             <button
               onClick={deleteAllData}
-              className="w-full flex items-center justify-center px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all font-medium"
+              className="w-full flex items-center justify-center px-4 py-3 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-all font-medium"
             >
               <Trash2 className="w-5 h-5 mr-2" />
               Delete All My Data
             </button>
           </div>
+
         </div>
       </div>
     </div>
