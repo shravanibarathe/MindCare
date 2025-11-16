@@ -1,0 +1,11 @@
+Flask==3.0.0
+Flask-CORS==4.0.0
+torch==2.1.0
+librosa==0.10.1
+numpy==1.24.3
+scipy==1.11.4
+soundfile==0.12.1
+python-dotenv==1.0.0
+supabase==2.3.0
+google-generativeai==0.3.2
+gunicorn==21.2.0
